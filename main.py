@@ -12,7 +12,7 @@ async def upload_file(file: UploadFile = File(...)):
     file_path = f"{UPLOAD_DIR}/{file_id}_{file.filename}"
     with open(file_path, "wb") as f:
         f.write(await file.read())
-    download_link = f"https://YOUR-RENDER-URL/download/{file_id}"
+    download_link = f"https://file-to-link-1-dsz5.onrender.com/download/{file_id}"
     return {"status":"success","link":download_link}
 
 @app.get("/download/{file_id}")
