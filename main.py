@@ -1,10 +1,25 @@
-from fastapi import FastAPI, UploadFile, File
-from fastapi.responses import FileResponse
+from fastapi import FastAPI, UploadFile, File, Form
+from fastapi.responses import FileResponse, HTMLResponse
 import uuid, os
 
 app = FastAPI()
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+@app.get("/")
+async def home():
+    html_content = """
+    <html>
+        <body>
+            <h2>File Upload</h2>
+            <form action="/upload" enctype="multipart/form-data" method="post">
+                <input name="file" type="file">
+                <input type="submit" value="Upload">
+            </form>
+        </body>
+    </html>
+    """
+    return HTMLResponse(content=html_content)
 
 @app.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
@@ -12,7 +27,7 @@ async def upload_file(file: UploadFile = File(...)):
     file_path = f"{UPLOAD_DIR}/{file_id}_{file.filename}"
     with open(file_path, "wb") as f:
         f.write(await file.read())
-    download_link = f"https://file-to-link-1-dsz5.onrender.com/download/{file_id}"
+    download_link = f"https://YOUR-RENDER-URL/download/{file_id}"
     return {"status":"success","link":download_link}
 
 @app.get("/download/{file_id}")
